@@ -1,0 +1,70 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: sans-serif;
+  position: relative;
+  height: 100vh;
+  padding-top: 50px;
+}
+
+body.open {
+  overflow-y: hidden;
+}
+
+body.open > .modal-window,
+body.open > .overlay {
+  display: block;
+}
+
+.theme {
+  background-color: black;
+  color: lime;
+  border: 3px solid lime;
+  border-radius: 15px;
+}
+
+.open-modal-btn {
+  margin: 0 auto;
+  display: block;
+  font-size: 40px;
+  padding: 10px 15px;
+  cursor: pointer;
+  outline: none;
+}
+
+.modal-window {
+  padding: 100px 90px;
+  font-size: 70px;
+  text-transform: uppercase;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  z-index: 999;
+}
+
+.close-btn {
+  text-decoration: underline;
+  color: lime;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 25px;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+}
