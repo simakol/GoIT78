@@ -4,9 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <title>GoIT78</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <div class="container">
+        <h2 class="title">Скільки коштує мясо на шашлики?</h2>
+        <form action="#" class="form" id="form">
+            <label for="price">Ціна грн</label>
+            <input type="number" id="price" name="price" value="200">
+            <label for="quantity">Кількість<span class="amount" id="amount">1</span>кг </label>
+            <input type="range" id="quantity" name="quantity" value="2" min="1" max="20">
+        </form>
+        <p class="text-right total" id="total"></p>
+    </div>
+
     <script src="script.js"></script>
 </body>
 

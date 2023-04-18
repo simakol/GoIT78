@@ -1,0 +1,44 @@
+* {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+  width: 300px;
+  background-color: grey;
+  margin: auto;
+  padding: 30px;
+}
+
+.title {
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+input {
+  display: block;
+  width: 100%;
+  border-radius: 3px;
+  border: 1px solid black;
+  padding: 5px;
+  margin-top: 10px;
+}
+#price {
+  margin-bottom: 10px;
+}
+
+.text-right {
+  text-align: right;
+  font-size: 30px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  margin-bottom: 0;
+}
+
+.amount {
+  background-color: blue;
+  display: inline-block;
+  padding: 1px 5px;
+  margin: 0 5px;
+  border-radius: 3px;
+  color: #fff;
+}
