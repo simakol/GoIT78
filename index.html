@@ -4,9 +4,52 @@
 <head>
     <meta charset="UTF-8">
     <title>GoIT78</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <!-- <div class="counter">
+        <h2>Scroll</h2>
+        <div class="box">
+            Without throttled: <span id="otuputScrollStandart">0</span>
+        </div>
+        <div class="box">
+            With throttled: <span id="otuputScrollThrottled">0</span>
+        </div>
+    </div>
+    <div class="counter counter-resize">
+        <h2>Resize</h2>
+        <div class="box">
+            Without throttled: <span id="otuputResizeStandart">0</span>
+        </div>
+        <div class="box">
+            With throttled: <span id="otuputResizeThrottled">0</span>
+        </div>
+    </div> -->
+
+    <!-- <label class="input">Enter your name
+        <input type="text" id="nameInput" placeholder="Name">
+    </label> -->
+
+    <!-- Написати форму логіна та паролья де буде відбуватися валідація полів на довжину після закінчення введення тексту. (Використати дебаунс) -->
+
+    <form id="signInForm">
+        <fieldset>
+            <legend>Sign in</legend>
+            <label>Enter your login
+                <input type="text" id="loginInput" placeholder="Login" data-min-length="3" data-max-length="10">
+            </label>
+            <label>Enter your password
+                <input type="password" id="passwordInput" placeholder="Password" data-min-length="8"
+                    data-max-length="15">
+            </label>
+        </fieldset>
+    </form>
+
+
+    <script src="
+https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
+"></script>
     <script src="script.js"></script>
 </body>
 
