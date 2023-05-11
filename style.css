@@ -1,12 +1,26 @@
 body {
   font-family: sans-serif;
 }
-input {
+button {
+  margin: 0 auto;
+  margin-top: 50px;
+  display: block;
+}
+button:disabled {
+  background-color: #c1c1c1;
+  cursor: not-allowed;
+}
+button.hidden {
+  display: none;
+}
+input,
+button {
   border-radius: 15px;
   padding: 10px 20px;
   font-size: 30px;
 }
-input[type="submit"] {
+input[type="submit"],
+button {
   border: none;
   background-color: rgba(45, 45, 233, 0.731);
   color: white;
@@ -17,6 +31,7 @@ input[type="submit"] {
   margin-top: 10px;
   display: flex;
   align-items: flex-start;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 10px;
 }

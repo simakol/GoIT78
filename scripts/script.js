@@ -1,22 +1,19 @@
-import API from "./api.js";
-
-/*
- 1. отримати refs
- 2. вішаємо слухач подій на сабміт на форму
- 3. отримати запит з інпуту і передати його у вигляді квері параметру на сервер
- 4. перевірити відповідь серверу
-    4.1. якщо негативна відповідь - інформувати користувача
- 5. отримаємо результат та перебираємо масив новин і створюємо з нього розмітку(збираємо одну строку)
- 6. показуємо користувачу розмітку (innerHTML)
- 7. очистити форму
-*/
+import NewsService from "./NewsService.js";
+import LoadMoreBtn from "./components/LoadMoreBtn.js";
 
 const refs = {
   form: document.getElementById("form"),
   newsWrapper: document.getElementById("newsWrapper"),
 };
 
+const newsService = new NewsService();
+const loadMoreBtn = new LoadMoreBtn({
+  selector: "#loadMore",
+  isHidden: true,
+});
+
 refs.form.addEventListener("submit", onSubmit);
+loadMoreBtn.button.addEventListener("click", fetchArticles);
 
 function onSubmit(event) {
   event.preventDefault();
@@ -24,21 +21,39 @@ function onSubmit(event) {
   const value = form.elements.news.value.trim();
 
   if (value === "") alert("No value!");
-  else
-    API.getNews(value)
-      .then(({ articles }) => {
-        if (articles.length === 0) throw new Error("No data");
+  else {
+    newsService.searchQuery = value;
+    newsService.resetPage();
 
-        return articles.reduce(
-          (markup, article) => markup + createMarkup(article),
-          ""
-        );
-      })
-      .then(updateNewsList)
-      //   .then(data => console.log(data))
-      .catch(onError)
-      .finally(() => form.reset());
-  //   .catch((err) => onError(err));
+    loadMoreBtn.show();
+    clearNewsList();
+    fetchArticles().finally(() => form.reset());
+  }
+}
+
+function fetchArticles() {
+  loadMoreBtn.disable();
+
+  return getArticlesMarkup().then(() => loadMoreBtn.enable());
+}
+
+function getArticlesMarkup() {
+  return newsService
+    .getNews()
+    .then((articles) => {
+      if (!articles) {
+        loadMoreBtn.hide();
+        return "";
+      }
+      if (articles.length === 0) throw new Error("No data");
+
+      return articles.reduce(
+        (markup, article) => markup + createMarkup(article),
+        ""
+      );
+    })
+    .then(updateNewsList)
+    .catch(onError);
 }
 
 function createMarkup({ title, author, description, url, urlToImage }) {
@@ -56,10 +71,26 @@ function createMarkup({ title, author, description, url, urlToImage }) {
 }
 
 function updateNewsList(markup) {
-  refs.newsWrapper.innerHTML = markup;
+  refs.newsWrapper.insertAdjacentHTML("beforeend", markup);
+}
+
+function clearNewsList() {
+  refs.newsWrapper.innerHTML = "";
 }
 
 function onError(err) {
   console.error(err);
-  updateNewsList("<p>Not found!</p>");
+  loadMoreBtn.hide();
+  refs.newsWrapper.innerHTML = "<p>Not found!</p>";
 }
+
+//! Infinite scroll
+// function handleScroll() {
+//   const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+
+//   if (scrollTop + clientHeight >= scrollHeight - 5) {
+//     fetchArticles();
+//   }
+// }
+
+// window.addEventListener("scroll", handleScroll);
