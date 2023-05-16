@@ -1,8 +1,5 @@
 import refs from "./refs.js";
-import { load, save } from "./storage.js";
-
-const STORAGE_KEY = "tasks";
-let currentID = 1;
+import { createTask, getTasks, updateTask, deleteTask } from "./api.js";
 
 function addCloseButton(target) {
   const span = document.createElement("span");
@@ -21,15 +18,19 @@ function addNewTask() {
     clearInput();
     return;
   }
-  createLi({
-    text: value,
-  });
 
-  addTaskToStorage(value);
+  createTask({ text: value })
+    .then(({ data }) => data)
+    // .then((res) => res.json()) //fetch
+    .then(createLi)
+    .catch(onError);
+
+  // .then(task => createLi(task));
+
   clearInput();
 }
 
-function createLi({ text, isDone = false, id = currentID }) {
+function createLi({ text, isDone, id }) {
   const liEl = document.createElement("li");
   liEl.textContent = text;
   liEl.dataset.id = id;
@@ -39,53 +40,35 @@ function createLi({ text, isDone = false, id = currentID }) {
 }
 
 function handleTaskBehaviour({ target }) {
-  const currentState = load(STORAGE_KEY);
-
   if (target.nodeName === "LI") {
     target.classList.toggle("checked");
-    const taskObj = currentState.find(
-      (task) => Number(task.id) === Number(target.dataset.id)
+    updateTask(target.dataset.id, target.classList.contains("checked")).catch(
+      onError
     );
-    taskObj.isDone = !taskObj.isDone;
   } else if (target.classList.contains("close")) {
-    target.parentNode.remove();
-    const taskIndex = currentState.findIndex(
-      (task) => Number(task.id) === Number(target.parentNode.dataset.id)
-    );
-    currentState.splice(taskIndex, 1);
+    deleteTask(target.parentNode.dataset.id)
+      .then(({ data }) => {
+        target.parentNode.remove();
+        return data;
+      })
+      .catch(onError);
+
+    // .then((res) => {
+    //   target.parentNode.remove();
+    //   return res.json();
+    // }); //fetch
   }
-
-  save(STORAGE_KEY, currentState);
-}
-
-function createTaskObject({ text, isDone = false }) {
-  return {
-    text,
-    isDone,
-    id: currentID,
-  };
-}
-
-function addTaskToStorage(text) {
-  const currentState = load(STORAGE_KEY);
-  if (currentState === undefined) {
-    save(STORAGE_KEY, [createTaskObject({ text })]);
-  } else {
-    currentState.push(createTaskObject({ text }));
-    save(STORAGE_KEY, currentState);
-  }
-  currentID += 1;
 }
 
 function fillTasksList() {
-  const currentState = load(STORAGE_KEY);
-  if (currentState !== undefined) {
-    currentState.forEach(createLi);
-    currentID =
-      currentState.length === 0
-        ? 1
-        : currentState[currentState.length - 1].id + 1;
-  }
+  // getTasks().then((tasks) => tasks.forEach((task) => createLi(task)));
+  getTasks()
+    .then((tasks) => tasks.forEach(createLi))
+    .catch(onError);
+}
+
+function onError(err) {
+  alert("Error: " + err.response.statusText);
 }
 
 export { addNewTask, handleTaskBehaviour, fillTasksList };
