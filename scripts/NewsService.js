@@ -6,17 +6,42 @@ export default class NewsService {
     this.page = 1;
     this.searchQuery = "";
   }
-
-  getNews() {
-    return fetch(
+  /*
+  1. await можна використовувати тільки всередині async функцій
+  2. асинхронна ф-ція завжди повертає Promise
+  3. await заморожує виконання функції до тих пір, поки проміс не перейде в стан fullfilled або у стан Rejected
+  4. await повертає дані з промісу
+  5. async/await потрібні для імітації синхронного коду усередині асинхронного
+*/
+  async getNews() {
+    //* axios await
+    const { data } = await axios.get(
       `${URL}?apiKey=${API_KEY}&q=${this.searchQuery}&searchIn=title&pageSize=6&page=${this.page}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        // if (data.status === "error") throw new Error("The end");
-        this.incrementPage();
-        return data.articles;
-      });
+    );
+    this.incrementPage();
+    return data.articles;
+
+    //* axios then
+    // return axios
+    //   .get(
+    //     `${URL}?apiKey=${API_KEY}&q=${this.searchQuery}&searchIn=title&pageSize=6&page=${this.page}`
+    //   )
+    //   .then(({ data }) => {
+    //     this.incrementPage();
+    //     return data.articles;
+    //   });
+
+    //* fetch then
+
+    // return fetch(
+    //   `${URL}?apiKey=${API_KEY}&q=${this.searchQuery}&searchIn=title&pageSize=6&page=${this.page}`
+    // )
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     // if (data.status === "error") throw new Error("The end");
+    //     this.incrementPage();
+    //     return data.articles;
+    //   });
   }
 
   resetPage() {

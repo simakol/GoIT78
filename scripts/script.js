@@ -31,29 +31,54 @@ function onSubmit(event) {
   }
 }
 
-function fetchArticles() {
+async function fetchArticles() {
   loadMoreBtn.disable();
 
-  return getArticlesMarkup().then(() => loadMoreBtn.enable());
+  try {
+    const markup = await getArticlesMarkup();
+    if (!markup) throw new Error("No data");
+    updateNewsList(markup);
+  } catch (err) {
+    onError(err);
+  }
+
+  loadMoreBtn.enable();
 }
 
-function getArticlesMarkup() {
-  return newsService
-    .getNews()
-    .then((articles) => {
-      if (!articles) {
-        loadMoreBtn.hide();
-        return "";
-      }
-      if (articles.length === 0) throw new Error("No data");
+async function getArticlesMarkup() {
+  try {
+    const articles = await newsService.getNews();
 
-      return articles.reduce(
-        (markup, article) => markup + createMarkup(article),
-        ""
-      );
-    })
-    .then(updateNewsList)
-    .catch(onError);
+    if (!articles) {
+      loadMoreBtn.hide();
+      return "";
+    }
+    if (articles.length === 0) throw new Error("No data");
+
+    return articles.reduce(
+      (markup, article) => markup + createMarkup(article),
+      ""
+    );
+  } catch (err) {
+    onError(err);
+  }
+  //* old code
+  // return newsService
+  //   .getNews()
+  //   .then((articles) => {
+  //     if (!articles) {
+  //       loadMoreBtn.hide();
+  //       return "";
+  //     }
+  //     if (articles.length === 0) throw new Error("No data");
+
+  //     return articles.reduce(
+  //       (markup, article) => markup + createMarkup(article),
+  //       ""
+  //     );
+  //   })
+  //   .then(updateNewsList)
+  //   .catch(onError);
 }
 
 function createMarkup({ title, author, description, url, urlToImage }) {
